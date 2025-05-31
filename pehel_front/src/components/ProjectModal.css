@@ -1,0 +1,82 @@
+.project-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+   
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .project-modal-content {
+    background: #656363;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: zoomIn 1s ease-out forwards;  /* ⬅️ Updated duration to 1.5s */
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  
+  @keyframes zoomIn {
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  
+  .modal-image-wrapper {
+    max-width: 50%;
+    position: relative;
+  }
+  
+  .modal-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  .arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .arrow-btn.left {
+    left: -40px;
+  }
+  
+  .arrow-btn.right {
+    right: -40px;
+  }
+  
+  .modal-info,
+  .modal-description {
+    width: 25%;
+    font-size: 0.95rem;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  

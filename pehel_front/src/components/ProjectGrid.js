@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../App.css';
+import ProjectModal from './ProjectModal';
 
 function ProjectGrid({ selectedCategory }) {
   const [allProjects, setAllProjects] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
   const [animateOut, setAnimateOut] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
   const projectRefs = useRef([]);
 
   // ✅ Fetch projects from API on component mount
@@ -64,7 +66,8 @@ function ProjectGrid({ selectedCategory }) {
           key={idx}
           ref={el => (projectRefs.current[idx] = el)}
           className={`d-flex align-items-center justify-content-center project-wrapper mb-4 ${idx % 2 === 0 ? 'even' : 'odd'}`}
-          style={{ maxWidth: '600px', gap: '20px' }}
+          style={{ maxWidth: '600px', gap: '20px', cursor: 'pointer' }}
+          onClick={() => setSelectedProject(project)}
         >
           <div className="project-text">
             <h5 className="mb-1">{project.title}</h5>
@@ -81,6 +84,13 @@ function ProjectGrid({ selectedCategory }) {
           </div>
         </div>
       ))}
+
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </div>
   );
 }

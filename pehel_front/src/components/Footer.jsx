@@ -20,7 +20,7 @@ function Footer() {
         {/* Mobile layout */}
         <div className="footer-bottom-mobile d-md-none">
           <div className="footer-connect">
-            Connect <span>with us</span>
+            Tvashtr 
           </div>
           <div className="footer-icons d-flex gap-3">
             <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="footer-icon whatsapp">
@@ -37,7 +37,7 @@ function Footer() {
 
         {/* Desktop layout */}
         <div className="d-none d-md-block text-center">
-          <h5 className="mb-1 stylish-heading">Connect <span>with us</span></h5>
+          <h5 className="mb-1 stylish-heading">Tvashstr </h5>
         </div>
 
         <div className="d-none d-md-flex footer-icons gap-3">
