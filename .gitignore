@@ -1,0 +1,21 @@
+# Node modules
+pehel_front/node_modules/
+pehel_server/node_modules/
+
+# Environment variables
+pehel_front/.env
+pehel_server/.env
+
+# Build folders
+pehel_front/build/
+pehel_server/dist/
+
+# Logs
+*.log
+
+# OS/System files
+.DS_Store
+
+# Editor folders
+.vscode/
+.idea/
