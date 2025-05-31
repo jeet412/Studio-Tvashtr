@@ -1,0 +1,30 @@
+import React, { useEffect, useState } from 'react';
+import './Home.css';
+import Projects from '../components/ProjectGrid';
+
+function Home({ selectedCategory }) {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(false);
+    const timer = setTimeout(() => setAnimate(true), 50);
+    return () => clearTimeout(timer);
+  }, [selectedCategory]);
+
+  return (
+    <div className="homepage">
+      {/* Hero Section */}
+      <div className="hero-section">
+        <h1 className="display-3 fw-bold">WE CREATE ARCHITECTURE</h1>
+        <p className="lead">Blending design, function & sustainability to shape the future.</p>
+      </div>
+
+      {/* Slide-in wrapper for projects */}
+      <div className={`projects-wrapper ${animate ? 'slide-in' : ''}`}>
+        <Projects selectedCategory={selectedCategory} />
+      </div>
+    </div>
+  );
+}
+
+export default Home;

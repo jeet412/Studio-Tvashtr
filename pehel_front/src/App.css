@@ -1,0 +1,274 @@
+/* Keep your existing styles */
+.project-card {
+  width: 400px;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.project-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover img {
+  transform: scale(1.1);
+}
+
+.project-card .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .overlay {
+  opacity: 1;
+}
+
+.project-wrapper {
+  margin: 0 auto;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Text on desktop */
+.project-text {
+  min-width: 160px;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.project-text h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.project-text p {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* .project-wrapper {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.project-wrapper.fade-out {
+  opacity: 0;
+} */
+/* Slide in from top */
+.slide-in-card {
+  opacity: 0;
+  transform: translateY(-40px);
+  animation: slideFadeIn 0.6s ease forwards;
+}
+
+@keyframes slideFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide out upwards */
+.slide-out-card {
+  opacity: 1;
+  transform: translateY(0);
+  animation: slideFadeOut 0.4s ease forwards;
+}
+
+@keyframes slideFadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+/* Optional: Zoom on scroll into viewport */
+.zoom-in {
+  transform: scale(1.03);
+  transition: transform 0.4s ease;
+}
+
+.footer-custom {
+  background-color: #333; /* dark grey */
+  border-top: 1px solid #444;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-icon {
+  color: #fff;
+  font-size: 1.4rem;
+  transition: color 0.3s ease;
+}
+
+/* Hover colors */
+.footer-icon.whatsapp:hover {
+  color: #25D366;
+}
+
+.footer-icon.instagram:hover {
+  color: #E1306C; /* or add a gradient effect if you want more flair */
+}
+
+.footer-icon.phone:hover {
+  color: #007bff;
+}
+
+.stylish-heading {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #fff;
+  font-family: 'Dancing Script', cursive;
+  letter-spacing: 0.5px;
+}
+
+.stylish-heading span {
+  color: #fff;
+}
+
+
+/* Center the contact form in the viewport with a small box */
+.contact-container {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
+  transition: box-shadow 0.3s ease;
+}
+.contact-container:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Blur the form when loading */
+.blur {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.3s ease;
+}
+
+/* Loader overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Loader spinner */
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.project-wrapper {
+  transition: transform 0.4s ease;
+}
+
+.project-wrapper.zoom-in {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+
+
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .project-wrapper {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .project-text {
+    min-width: auto;
+    text-align: center;
+    padding: 15px 0 0 0; /* spacing above text */
+  }
+
+  .project-card {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    margin: 0 auto;
+  }
+
+  .footer-custom .container {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+  }
+
+  .footer-address {
+    order: 1;
+  }
+
+  .footer-bottom-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px 0;
+    order: 2;
+  }
+
+  .footer-connect {
+    text-align: left !important;
+    font-size: 1.3rem;
+    font-style: italic;
+    font-family: 'Dancing Script', cursive;
+    color: #fff;
+  }
+
+  .footer-icons {
+    justify-content: flex-end !important;
+  }
+}

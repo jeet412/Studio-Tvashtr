@@ -1,0 +1,37 @@
+.homepage {
+    background-color: #ffffff;
+    padding: 40px 20px;
+  }
+  
+  .hero-section {
+    padding-top: 20px;    /* reduced padding */
+    padding-bottom: 20px; /* reduced padding */
+    max-width: 700px;
+    margin: 0 auto;       /* center horizontally */
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    margin-bottom: 0.5rem; /* reduce space below heading */
+    font-weight: 700;
+    font-size: 3rem;       /* adjust size if needed */
+  }
+  
+  .hero-section p {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: #444;
+  }
+
+  .projects-wrapper {
+    opacity: 0;
+    transform: translateY(-100px); /* clearly visible drop */
+    transition: opacity 2s ease, transform 1s ease;
+  }
+  
+  .projects-wrapper.slide-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  

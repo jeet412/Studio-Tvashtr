@@ -1,0 +1,305 @@
+.big-navbar {
+  background-color: #fff;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Desktop logo */
+.navbar-logo {
+  height: 40px;
+}
+
+/* Desktop links container */
+.navbar-links-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 40px;
+}
+
+/* Base link style */
+.navbar-links a {
+  position: relative;
+  color: #333;
+  text-decoration: none;
+  padding-bottom: 5px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Hover underline animation for NON-active links only */
+.navbar-links a:not(.active-link)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  
+  background-color: #000;
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+  transform-origin: left;
+}
+
+.navbar-links a:not(.active-link):hover::after {
+  transform: scaleX(1);
+}
+
+.navbar-links a:not(.active-link):hover {
+  color: #555;
+  
+}
+
+/* Persistent underline and style on active link */
+.navbar-links a.active-link {
+  border-bottom: 2px solid #000;
+  color: #000;
+}
+
+/* Remove ::after on active link so no hover animation */
+.navbar-links a.active-link::after {
+  content: none;
+}
+
+/* MOBILE STYLES */
+
+.hamburger {
+  display: none; /* hidden on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1100;
+  transition: transform 0.3s ease;
+}
+
+/* Hamburger lines */
+.hamburger .line {
+  height: 3px;
+  background-color: #000;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Line widths and spacing */
+.hamburger .line1,
+.hamburger .line3 {
+  width: 100%;
+}
+
+.hamburger .line2 {
+  width: 70%;
+  align-self: flex-end;
+}
+
+/* Hamburger open state */
+.hamburger.open .line1 {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open .line2 {
+  opacity: 0;
+}
+
+.hamburger.open .line3 {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Button without default styling */
+.btn-no-style {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -320px;  /* change from right to left */
+  width: 220px;
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.2); /* shadow on right side now */
+  transition: left 0.4s ease; /* change from right to left */
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+}
+
+.side-menu.open {
+  left: 0;  /* slide in from left */
+}
+
+
+/* Close button */
+.side-menu-close-btn {
+  align-self: flex-end;
+  font-size: 2.5rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  padding: 0;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.side-menu-close-btn:hover {
+  color: #555; /* your primary highlight color */
+  transform: rotate(90deg);
+}
+
+/* Links inside side menu */
+.side-menu-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.side-menu-link {
+  font-size: 1.25rem;
+  color: #333;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.side-menu-link:hover,
+.side-menu-link:focus {
+  color: #555;
+}
+
+.side-menu-link::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #555;;
+  transition: width 0.3s ease;
+}
+
+.side-menu-link:hover::after,
+.side-menu-link:focus::after {
+  width: 100%;
+}
+
+.search-icon {
+  font-size: 1.5rem;
+  color: #333;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .mobile-navbar-top {
+    padding: 0 1rem;
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
+  }
+}
+
+
+/* MOBILE NAVBAR TOP CONTAINER */
+@media (max-width: 768px) {
+  .big-navbar {
+    padding: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mobile-navbar-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 0 60px; /* space for hamburger left and some right padding */
+  }
+
+  /* Hamburger inside mobile-navbar-top, left aligned */
+  .hamburger {
+    display: flex;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Logo centered absolutely */
+  .logo-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1201; /* above hamburger */
+  }
+
+  /* Hide nav links initially off-screen left */
+  .navbar-links-container {
+    position: fixed;
+    top: 60px; /* below navbar top */
+    left: 0;
+    width: 100%;
+    background: #fff;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1100;
+    pointer-events: none;
+  }
+
+  /* When open, slide in */
+  .navbar-links-container.show {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .navbar-links a {
+    font-size: 1.2rem;
+  }
+}
