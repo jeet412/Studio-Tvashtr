@@ -1,25 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../App.css';
-import ProjectModal from './ProjectModal';
 
 function ProjectGrid({ selectedCategory }) {
   const [allProjects, setAllProjects] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
   const [animateOut, setAnimateOut] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [expandedProjectId, setExpandedProjectId] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState('');
+  const [isShrinking, setIsShrinking] = useState(false);
   const projectRefs = useRef([]);
 
-  // ✅ Fetch projects from API on component mount
+  
   useEffect(() => {
     fetch('http://localhost:5000/api/projects')
       .then(res => res.json())
       .then(data => {
         setAllProjects(data);
-        setCurrentProjects(data); // Show all initially
+        setCurrentProjects(data);
       });
   }, []);
 
-  // ✅ Handle filtering when category changes
   useEffect(() => {
     setAnimateOut(true);
     const timeout = setTimeout(() => {
@@ -28,12 +29,11 @@ function ProjectGrid({ selectedCategory }) {
         : allProjects.filter(p => p.category === selectedCategory);
       setCurrentProjects(filtered);
       setAnimateOut(false);
+      setExpandedProjectId(null);
     }, 400);
-
     return () => clearTimeout(timeout);
   }, [selectedCategory, allProjects]);
 
-  // ✅ Scroll animation observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
@@ -59,38 +59,142 @@ function ProjectGrid({ selectedCategory }) {
     };
   }, [currentProjects]);
 
+  const toggleExpand = (id) => {
+    if (expandedProjectId === id) {
+      setIsShrinking(true);
+      setTimeout(() => {
+        setExpandedProjectId(null);
+        setIsShrinking(false);
+        setCurrentIndex(0);
+      }, 800);
+    } else {
+      setExpandedProjectId(id);
+      setCurrentIndex(0);
+
+      const expandedIndex = currentProjects.findIndex(p => p._id === id);
+      const target = projectRefs.current[expandedIndex];
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+      }
+    }
+  };
+
+  const handleNext = (mediaLength, e) => {
+    e.stopPropagation();
+    if (currentIndex < mediaLength - 1) {
+      setSlideDirection('right');
+      setTimeout(() => {
+        setCurrentIndex(prev => prev + 1);
+        setSlideDirection('');
+      }, 800);
+    }
+  };
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    if (currentIndex > 0) {
+      setSlideDirection('left');
+      setTimeout(() => {
+        setCurrentIndex(prev => prev - 1);
+        setSlideDirection('');
+      }, 800);
+    }
+  };
+
   return (
     <div className={`container py-5 ${animateOut ? 'slide-out-card' : 'slide-in-card'}`}>
-      {currentProjects.map((project, idx) => (
-        <div
-          key={idx}
-          ref={el => (projectRefs.current[idx] = el)}
-          className={`d-flex align-items-center justify-content-center project-wrapper mb-4 ${idx % 2 === 0 ? 'even' : 'odd'}`}
-          style={{ maxWidth: '600px', gap: '20px', cursor: 'pointer' }}
-          onClick={() => setSelectedProject(project)}
-        >
-          <div className="project-text">
-            <h5 className="mb-1">{project.title}</h5>
-            <p className="mb-0 text-muted">
-              {project.date} — {project.location}
-            </p>
-          </div>
+      {currentProjects.map((project, idx) => {
+        const isExpanded = expandedProjectId === project._id;
+        const media = project.media?.[currentIndex] || {};
 
-          <div className="project-card position-relative overflow-hidden">
-            <img src={project.img} className="img-fluid" alt={project.title} />
-            <div className="overlay d-flex align-items-center justify-content-center">
-              <h5 className="text-white text-center">{project.title}</h5>
-            </div>
-          </div>
-        </div>
-      ))}
+        return (
+          <div
+            key={project._id}
+            ref={el => (projectRefs.current[idx] = el)}
+            className={`project-wrapper ${isExpanded ? 'expanded' : ''} ${isShrinking ? 'shrink' : ''}`}
+            onClick={() => toggleExpand(project._id)}
+          >
+            {isExpanded ? (
+              <div className="expanded-container">
+                <div className="expanded-text-left">
+                  <h5>{project.title}</h5>
+                  <p>{project.date} — {project.location}</p>
+                </div>
 
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
+                <div className="expanded-image-wrapper">
+                <div className="expanded-image">
+  <img
+    src={(project.media?.[currentIndex]?.img || project.img)}
+    alt={project.title}
+    className="base-image"
+  />
+  {slideDirection && (
+    <img
+      src={
+        slideDirection === 'right'
+          ? project.media?.[currentIndex + 1]?.img
+          : project.media?.[currentIndex - 1]?.img
+      }
+      alt="next"
+      className={`slide-image slide-in-${slideDirection}`}
+      onAnimationEnd={() => {
+        setCurrentIndex(prev =>
+          slideDirection === 'right' ? prev + 1 : prev - 1
+        );
+        setSlideDirection('');
+      }}
+    />
+  )}
+</div>
+
+
+                  <button className="close-btn" onClick={(e) => { e.stopPropagation(); toggleExpand(project._id); }}>×</button>
+                  <button
+                    className="nav-btn left"
+                    onClick={(e) => handlePrev(e)}
+                    disabled={currentIndex === 0}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="nav-btn right"
+                    onClick={(e) => handleNext(project.media.length, e)}
+                    disabled={currentIndex === project.media.length - 1}
+                  >
+                    ›
+                  </button>
+                </div>
+
+                <div className="expanded-text-right">
+                  <p>{media.description}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="d-flex align-items-center justify-content-center mb-4 project-static" style={{ gap: '20px', cursor: 'pointer' }}>
+                <div className="project-text">
+                  <h5 className="mb-1">{project.title}</h5>
+                  <p className="mb-0 text-muted">
+                    {project.date} — {project.location}
+                  </p>
+                </div>
+
+                <div className="project-card position-relative overflow-hidden">
+                  <img
+                    src={project.img}
+                    className="img-fluid"
+                    alt={project.title}
+                  />
+                  <div className="overlay d-flex align-items-center justify-content-center">
+                    <h5 className="text-white text-center">{project.title}</h5>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
