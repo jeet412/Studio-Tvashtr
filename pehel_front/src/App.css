@@ -428,12 +428,7 @@ body, html {
     margin: 0 auto 10px auto; /* margin bottom for spacing */
   }
 
-  .project-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
+  
   .project-text {
     min-width: auto;
     text-align: center;

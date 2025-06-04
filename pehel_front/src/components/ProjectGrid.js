@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../App.css';
 
-function ProjectGrid({ selectedCategory }) {
+function ProjectGrid({ selectedCategory, selectedProject }) {
   const [allProjects, setAllProjects] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
   const [animateOut, setAnimateOut] = useState(false);
@@ -11,7 +11,7 @@ function ProjectGrid({ selectedCategory }) {
   const [isShrinking, setIsShrinking] = useState(false);
   const projectRefs = useRef([]);
 
-  
+  // Fetch all projects once
   useEffect(() => {
     fetch('http://localhost:5000/api/projects')
       .then(res => res.json())
@@ -21,19 +21,36 @@ function ProjectGrid({ selectedCategory }) {
       });
   }, []);
 
+  // Filter and reorder projects on category or selectedProject change
   useEffect(() => {
     setAnimateOut(true);
+
     const timeout = setTimeout(() => {
+      // Filter by category
       const filtered = selectedCategory === 'All'
         ? allProjects
         : allProjects.filter(p => p.category === selectedCategory);
-      setCurrentProjects(filtered);
+
+      // If selectedProject is present and matches category, put it first
+      let reorderedProjects = filtered;
+
+      if (selectedProject && selectedProject.category === selectedCategory) {
+        reorderedProjects = [
+          selectedProject,
+          ...filtered.filter(p => p._id !== selectedProject._id),
+        ];
+      }
+
+      setCurrentProjects(reorderedProjects);
       setAnimateOut(false);
       setExpandedProjectId(null);
+      setCurrentIndex(0); // reset slide index when project list changes
     }, 400);
-    return () => clearTimeout(timeout);
-  }, [selectedCategory, allProjects]);
 
+    return () => clearTimeout(timeout);
+  }, [selectedCategory, allProjects, selectedProject]);
+
+  // Intersection observer animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
@@ -59,6 +76,21 @@ function ProjectGrid({ selectedCategory }) {
     };
   }, [currentProjects]);
 
+  // Scroll to selectedProject if provided
+  useEffect(() => {
+    if (selectedProject && currentProjects.length > 0) {
+      const index = currentProjects.findIndex(p => p._id === selectedProject._id);
+      if (index !== -1 && projectRefs.current[index]) {
+        setTimeout(() => {
+          const el = projectRefs.current[index];
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setExpandedProjectId(selectedProject._id);
+          setCurrentIndex(0);
+        }, 500);
+      }
+    }
+  }, [selectedProject, currentProjects]);
+
   const toggleExpand = (id) => {
     if (expandedProjectId === id) {
       setIsShrinking(true);
@@ -70,13 +102,14 @@ function ProjectGrid({ selectedCategory }) {
     } else {
       setExpandedProjectId(id);
       setCurrentIndex(0);
-
-      const expandedIndex = currentProjects.findIndex(p => p._id === id);
-      const target = projectRefs.current[expandedIndex];
-      if (target) {
+      const index = currentProjects.findIndex(p => p._id === id);
+      if (index !== -1) {
         setTimeout(() => {
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 200);
+          const el = projectRefs.current[index];
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 700);
       }
     }
   };
@@ -124,31 +157,30 @@ function ProjectGrid({ selectedCategory }) {
                 </div>
 
                 <div className="expanded-image-wrapper">
-                <div className="expanded-image">
-  <img
-    src={(project.media?.[currentIndex]?.img || project.img)}
-    alt={project.title}
-    className="base-image"
-  />
-  {slideDirection && (
-    <img
-      src={
-        slideDirection === 'right'
-          ? project.media?.[currentIndex + 1]?.img
-          : project.media?.[currentIndex - 1]?.img
-      }
-      alt="next"
-      className={`slide-image slide-in-${slideDirection}`}
-      onAnimationEnd={() => {
-        setCurrentIndex(prev =>
-          slideDirection === 'right' ? prev + 1 : prev - 1
-        );
-        setSlideDirection('');
-      }}
-    />
-  )}
-</div>
-
+                  <div className="expanded-image">
+                    <img
+                      src={media.img || project.img}
+                      alt={project.title}
+                      className="base-image"
+                    />
+                    {slideDirection && (
+                      <img
+                        src={
+                          slideDirection === 'right'
+                            ? project.media?.[currentIndex + 1]?.img
+                            : project.media?.[currentIndex - 1]?.img
+                        }
+                        alt="next"
+                        className={`slide-image slide-in-${slideDirection}`}
+                        onAnimationEnd={() => {
+                          setCurrentIndex(prev =>
+                            slideDirection === 'right' ? prev + 1 : prev - 1
+                          );
+                          setSlideDirection('');
+                        }}
+                      />
+                    )}
+                  </div>
 
                   <button className="close-btn" onClick={(e) => { e.stopPropagation(); toggleExpand(project._id); }}>×</button>
                   <button
