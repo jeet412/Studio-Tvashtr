@@ -6,23 +6,61 @@ body, html {
 /* Keep your existing styles */
 .project-card {
   width: 400px;
-  height: auto;
-  transition: transform 0.4s ease;
+  height: 270px; /* fixed height */
   position: relative;
-  
   overflow: hidden;
+  transition: transform 0.4s ease;
 }
+
+
 
 .project-card img {
   width: 100%;
-  height: auto;
+  height: 100%; /* fill the container */
+  object-fit: cover; /* cover and crop if needed */
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.5s ease;
+  border-radius: 0 !important; /* no border radius */
 }
 
 .project-card:hover img {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
+.project-static-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.project-text {
+  min-width: 160px;
+  max-width: 160px;
+  text-align: right;
+  padding-right: 10px;
+  word-wrap: break-word;
+  white-space: normal;
+  flex-shrink: 0;
+}
+
+.project-card.uniform {
+  width: 400px;
+  height: 260px; /* Fixed height for uniformity */
+  flex-shrink: 0;
+  flex-grow: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card.uniform img.uniform-size {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 
 .overlay {
   position: absolute;
@@ -30,7 +68,7 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -39,14 +77,25 @@ body, html {
   opacity: 1;
 }
 
-.project-wrapper {
-  transition: all 0.5s ease;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.project-wrapper.expanded {
+  transform: scale(1.5);
+  transition: transform 1s ease;
+  z-index: 10;
+  margin: 100px 0px;
+  position: relative;
+  height: auto;
 }
-/* Text on desktop */
+.project-wrapper.expanded .project-static {
+  flex-direction: column; /* Optional: better layout for scaled content */
+}
+
+.project-wrapper.shrink {
+  transform: scale(1);
+  transition: transform 1.5s ease; /* smooth shrink as well */
+  z-index: 1;
+}
+
 .project-text {
   min-width: 160px;
   text-align: right;
@@ -62,18 +111,11 @@ body, html {
   font-size: 0.85rem;
   color: #666;
 }
+
 .project-static {
   max-width: 600px;
 }
 
-/* .project-wrapper {
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.project-wrapper.fade-out {
-  opacity: 0;
-} */
 /* Slide in from top */
 .slide-in-card {
   opacity: 0;
@@ -101,15 +143,20 @@ body, html {
     transform: translateY(-30px);
   }
 }
+.project-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  transition: transform 1.8s ease;
+  transform-origin: center center;
+}
 
-/* Optional: Zoom on scroll into viewport */
-.zoom-in {
-  transform: scale(1.03);
-  transition: transform 0.4s ease;
-}/* Expanded view container improvements */
-/* Expanded container styles */
-/* Expanded Container Layout */
-/* Core expanded container layout */
+.project-wrapper.zoom-in {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+/* Expanded view */
 .expanded-container {
   display: flex;
   align-items: flex-start;
@@ -122,64 +169,6 @@ body, html {
   z-index: 5;
 }
 
-/* Image block (no absolute!) */
-/* Wrapper */
-.expanded-image {
-  position: relative;
-  width: 100%;
-  height: auto;
-  overflow: hidden;
-}
-
-.base-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
-
-.slide-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  z-index: 2;
-}
-
-.slide-in-right {
-  animation: slideInFromRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.slide-in-left {
-  animation: slideInFromLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0%);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0%);
-    opacity: 1;
-  }
-}
-
-
-/* Text Left */
 .expanded-text-left {
   max-width: 220px;
   padding-top: 10px;
@@ -187,68 +176,42 @@ body, html {
   font-size: 1rem;
   z-index: 3;
 }
+
 .expanded-text-left h5 {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 0.4rem;
 }
+
 .expanded-text-left p {
   font-size: 0.95rem;
   color: #444;
 }
 
-/* Right Text (description) */
-.expanded-text-right {
-  max-width: 280px;
-  font-size: 0.95rem;
-  padding-top: 10px;
-  text-align: left;
-  line-height: 1.6;
-  z-index: 3;
+.project-card,
+.expanded-image-wrapper {
+  transition: all 0.8s ease;
 }
 
-/* Expand Animation */
-.project-wrapper.expanded {
-  transform: scale(1.05);
-  transition: transform 1s ease;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-  background: #fff;
+.scrollable-image-container {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
 }
 
-/* Shrink animation */
-.project-wrapper.shrink {
-  transform: scale(1);
-  transition: transform 0.8s ease;
+.expanded-image.fixed-size {
+  width: 720px;
+  height: auto;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-/* Nav Buttons */
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2.6rem;
-  font-weight: bold;
-  background: transparent;
-  border: none;
-  color: #000;
-  cursor: pointer;
-  z-index: 10;
-}
-.nav-btn.left {
-  left: 10px;
-}
-.nav-btn.right {
-  right: 10px;
-}
-.nav-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
+/* Nav buttons */
 
 /* Close button */
 .close-btn {
   position: absolute;
-  top: 20px;  /* ⬅️ Move inside */
+  top: 20px;
   right: 20px;
   font-size: 1.6rem;
   background: #fff;
@@ -263,7 +226,19 @@ body, html {
   z-index: 15;
 }
 
-/* Mobile View */
+
+
+@media (min-width: 769px) {
+  .project-static {
+    display: flex !important;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+/* Mobile view */
 @media (max-width: 768px) {
   .expanded-container {
     flex-direction: column;
@@ -271,24 +246,67 @@ body, html {
     padding: 30px 20px;
   }
 
-  .expanded-text-left,
-  .expanded-text-right {
+  .expanded-text-left {
     max-width: 100%;
     text-align: center;
-  }
-
-  .nav-btn.left {
-    left: 15px;
-  }
-  .nav-btn.right {
-    right: 15px;
+    padding: 0 10px;
   }
 
   .close-btn {
     top: 10px;
     right: 10px;
   }
+
+  .project-wrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 10px;
+  }
+
+  .project-static {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .project-card {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 10px auto;
+  }
+  .project-text {
+    text-align: center;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .project-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+  }
+
+  
+  .project-text h5 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .project-text p {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .expanded-image.fixed-size {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    object-fit: contain;
+  }
 }
+
 
 
 .footer-custom {
@@ -395,47 +413,13 @@ body, html {
 }
 
 
-.project-wrapper {
-  transition: transform 0.8s ease;
-  transform-origin: center center;
-}
-
-.project-wrapper.zoom-in {
-  transform: scale(1.05);
-  z-index: 1;
-}
 
 
 
 
 /* Mobile layout */
 @media (max-width: 768px) {
-  .project-wrapper {
-    flex-direction: column;
-    text-align: center;
-    padding-top: 10px;
-  }
-
-  .project-static {
-    flex-direction: column !important;  /* override d-flex row on mobile */
-    align-items: center;
-  }
-
-  .project-card {
-    width: 100%;
-    max-width: 400px;
-    height: auto;  /* allow height to adjust */
-    margin: 0 auto 10px auto; /* margin bottom for spacing */
-  }
-
   
-  .project-text {
-    min-width: auto;
-    text-align: center;
-    padding: 0; /* remove padding */
-    width: 100%;
-  }
-
 
   .footer-custom .container {
     flex-direction: column !important;

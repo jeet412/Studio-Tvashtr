@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';  // Import Home, which contains hero + projects
+import Home from './pages/Home';
 import Footer from './components/Footer';
 import Contact from './pages/Contact';
 
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  // selectedCategory is always an object: { category: string, subcategory: string|null }
+  const [selectedCategory, setSelectedCategory] = useState({ category: 'All', subcategory: null });
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  const handleCategorySelect = (categoryObj) => {
+    setSelectedCategory(categoryObj);
     setSelectedProject(null);
   };
 
   const handleProjectSelect = (project) => {
     setSelectedProject(project);
-    setSelectedCategory(project.category);
+    if (project) {
+      setSelectedCategory({ category: project.category, subcategory: project.subcategory || null });
+    }
   };
 
   return (
     <Router>
       <Navbar
+        selectedCategory={selectedCategory}
         onCategorySelect={handleCategorySelect}
         onProjectSelect={handleProjectSelect}
       />
-
       <Routes>
         <Route
           path="/"
@@ -38,7 +41,6 @@ function App() {
         />
         <Route path="/contact" element={<Contact />} />
       </Routes>
-
       <Footer />
     </Router>
   );

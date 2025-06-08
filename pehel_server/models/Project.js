@@ -5,13 +5,9 @@ const projectSchema = new mongoose.Schema({
   date: String,
   location: String,
   category: String,
-  img: String, 
-  media: [
-    {
-      img: String,           // image URL
-      description: String    // corresponding description
-    }
-  ]
+  subcategory: String,
+  img: String,      // Thumbnail shown on homepage
+  fullImg: String   // BIG.dk-style long image shown on click
 });
 
 module.exports = mongoose.model('Project', projectSchema);

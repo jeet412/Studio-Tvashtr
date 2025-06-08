@@ -1,25 +1,37 @@
-// routes/projectroutes.js
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 
-// Get all projects
+// GET all projects
 router.get('/', async (req, res) => {
   try {
-    const projects = await Project.find();
+    const { category, subcategory } = req.query;
+
+    let filter = {};
+
+    if (category && category !== 'All') {
+      filter.category = category;
+    }
+
+    if (subcategory && subcategory !== 'All') {
+      filter.subcategory = subcategory;
+    }
+
+    const projects = await Project.find(filter);
     res.json(projects);
   } catch (err) {
+    console.error('Error fetching projects:', err);
     res.status(500).json({ error: 'Failed to fetch projects' });
   }
 });
 
-// Search projects by title (minimum 3 characters)
+// SEARCH projects by title (case-insensitive, min 3 chars)
 router.get('/search', async (req, res) => {
   try {
     const query = req.query.q;
     if (!query || query.length < 3) return res.json([]);
 
-    const regex = new RegExp(query, 'i'); // case-insensitive match
+    const regex = new RegExp(query, 'i'); // case-insensitive
     const results = await Project.find({ title: regex });
 
     res.json(results);
