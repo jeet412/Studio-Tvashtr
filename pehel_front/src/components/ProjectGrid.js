@@ -88,11 +88,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
   }, [selectedProject, currentProjects]);
 
   const toggleExpand = (id) => {
-    if (expandedProjectId === id) {
-      // Don't collapse on second click
-      return;
-    }
-  
+    if (expandedProjectId === id) return;
     setExpandedProjectId(id);
     setTimeout(() => {
       const index = currentProjects.findIndex((p) => p._id === id);
@@ -101,7 +97,6 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
       }
     }, 300);
   };
-  
 
   const scrollLeft = (e) => {
     e.stopPropagation();
@@ -145,7 +140,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - el.offsetLeft;
-      const walk = (x - startX) * 1.5; // adjust speed
+      const walk = (x - startX) * 1.5;
       el.scrollLeft = scrollLeft - walk;
     };
 
@@ -211,10 +206,42 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
               )}
 
               <div className="project-text ms-3">
-                <h5 className="mb-1">{project.title}</h5>
-                <p className="mb-0 text-muted">
-                  {project.date} — {project.location}
-                </p>
+                {!isExpanded ? (
+                  <>
+                    <h5 className="mb-1">{project.title}</h5>
+                    <p className="mb-0 text-muted">
+                      {project.date} — {project.location}
+                    </p>
+                  </>
+                ) : (
+                  <div
+                    className="share-icon d-flex align-items-center justify-content-center"
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: '#000',
+                      color: '#fff',
+                      cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (navigator.share) {
+                        navigator.share({
+                          title: project.title,
+                          url: window.location.href,
+                        });
+                      } else {
+                        alert('Share not supported');
+                      }
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="white">
+                      <path d="M0 0h24v24H0z" fill="none" />
+                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.018 3.018 0 000-1.4l7.02-4.11A2.993 2.993 0 0018 7.91a3 3 0 10-2.99-3.13L7.99 8.91a3.003 3.003 0 000 6.18l7.02 4.12c.05.03.09.07.14.1A2.996 2.996 0 1018 16.08z" />
+                    </svg>
+                  </div>
+                )}
               </div>
             </div>
           </div>
