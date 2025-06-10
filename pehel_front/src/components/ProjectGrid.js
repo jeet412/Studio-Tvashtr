@@ -236,10 +236,18 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
                       }
                     }}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="white">
-                      <path d="M0 0h24v24H0z" fill="none" />
-                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.018 3.018 0 000-1.4l7.02-4.11A2.993 2.993 0 0018 7.91a3 3 0 10-2.99-3.13L7.99 8.91a3.003 3.003 0 000 6.18l7.02 4.12c.05.03.09.07.14.1A2.996 2.996 0 1018 16.08z" />
+                   <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      fill="white"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.03 3.03 0 000-1.39l7.02-4.11a2.996 2.996 0 10-.91-1.34L8 10.91a3 3 0 100 2.18l7.02 4.11c.5-.46 1.17-.75 1.89-.75a3 3 0 100-6z" />
                     </svg>
+
+
                   </div>
                 )}
               </div>
