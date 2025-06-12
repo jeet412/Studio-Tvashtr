@@ -10,6 +10,25 @@
     margin: 0 auto;       /* center horizontally */
     text-align: center;
   }
+  .hero-title {
+    font-size: 2rem;          /* Reduce slightly from 2.25rem */
+    font-weight: 500;         /* Lighter weight than 600 */
+    margin: 0;
+    line-height: 1.2;
+    text-align: center;
+  
+    font-display: swap;       /* Ensure font swaps fast */
+    font-family: 'Segoe UI', sans-serif; /* Use system font fallback first */
+  }
+  
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 1.4rem;       /* Reduce even more on mobile */
+    }
+  }
+  
+  
+  
   
   .hero-section h1 {
     margin-bottom: 0.5rem; /* reduce space below heading */

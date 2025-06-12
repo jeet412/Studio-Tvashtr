@@ -9,27 +9,44 @@ function Footer() {
         
         {/* Address */}
         <div className="footer-address text-center text-md-start mb-2 mb-md-0">
-          <h6 className="mb-1 fw-semibold text-white">Studio Address</h6>
-          <p className="mb-0 small text-light">
-            302, Urban Hive Complex,<br />
-            Nr. Riverfront Road, Ahmedabad – 380015<br />
-            Gujarat, India
-          </p>
-        </div>
+  <h6 className="mb-1 fw-medium text-white">Studio Address</h6>
+  <div className="footer-text">
+    302, Urban Hive Complex,<br />
+    Nr. Riverfront Road, Ahmedabad – 380015<br />
+    Gujarat, India
+  </div>
+</div>
+
 
         {/* Mobile layout */}
         <div className="footer-bottom-mobile d-md-none">
           <div className="footer-connect">
-            Tvashtr 
+            Tvashtr
           </div>
           <div className="footer-icons d-flex gap-3">
-            <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="footer-icon whatsapp">
+            <a
+              href="https://wa.me/919876543210"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-icon whatsapp"
+              aria-label="Chat with us on WhatsApp"
+            >
               <FaWhatsapp />
             </a>
-            <a href="https://instagram.com/yourstudio" target="_blank" rel="noopener noreferrer" className="footer-icon instagram">
+            <a
+              href="https://instagram.com/yourstudio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-icon instagram"
+              aria-label="Visit our Instagram page"
+            >
               <FaInstagram />
             </a>
-            <a href="tel:+919876543210" className="footer-icon phone">
+            <a
+              href="tel:+919876543210"
+              className="footer-icon phone"
+              aria-label="Call us"
+            >
               <FaPhoneAlt />
             </a>
           </div>
@@ -37,17 +54,33 @@ function Footer() {
 
         {/* Desktop layout */}
         <div className="d-none d-md-block text-center">
-          <h5 className="mb-1 stylish-heading">Tvashstr </h5>
+          <h5 className="mb-1 stylish-heading">Tvashstr</h5>
         </div>
 
         <div className="d-none d-md-flex footer-icons gap-3">
-          <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="footer-icon whatsapp">
+          <a
+            href="https://wa.me/919876543210"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon whatsapp"
+            aria-label="Chat with us on WhatsApp"
+          >
             <FaWhatsapp />
           </a>
-          <a href="https://instagram.com/yourstudio" target="_blank" rel="noopener noreferrer" className="footer-icon instagram">
+          <a
+            href="https://instagram.com/yourstudio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon instagram"
+            aria-label="Visit our Instagram page"
+          >
             <FaInstagram />
           </a>
-          <a href="tel:+919876543210" className="footer-icon phone">
+          <a
+            href="tel:+919876543210"
+            className="footer-icon phone"
+            aria-label="Call us"
+          >
             <FaPhoneAlt />
           </a>
         </div>

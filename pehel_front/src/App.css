@@ -377,6 +377,10 @@ body, html {
   background-color: #333; /* dark grey */
   border-top: 1px solid #444;
   font-family: 'Segoe UI', sans-serif;
+  min-height: 120px; 
+
+  /* Optional smooth load appearance */
+  transition: all 0.3s ease;
 }
 
 .footer-icon {
@@ -481,7 +485,12 @@ html {
 
 
 
-
+.footer-address {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500; /* Not 600+ */
+  color: #ddd;      /* Lighter color instead of text-light */
+  font-size: 0.9rem;
+}
 
 /* Mobile layout */
 @media (max-width: 768px) {
