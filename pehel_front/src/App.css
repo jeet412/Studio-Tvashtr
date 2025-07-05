@@ -80,7 +80,7 @@ body, html {
 
 
 .project-wrapper.expanded {
-  transform: scale(1.5);
+  transform: scale(2);
   transition: transform 2s ease;
   z-index: 10;
   margin: 100px 0px;
@@ -88,7 +88,8 @@ body, html {
   height: auto;
 }
 .project-wrapper.expanded .project-static {
-  flex-direction: column; /* Optional: better layout for scaled content */
+  flex-direction: column; 
+  /* Optional: better layout for scaled content */
 }
 
 .project-wrapper.shrink {
@@ -190,6 +191,9 @@ body, html {
   flex-shrink: 0;
 }
 .project-card.expanded-img {
+  box-shadow: 10px 28px 40px rgba(0, 0, 0, 0.15); /* Smooth subtle shadow */
+   /* Optional: smooth corners */
+  background-color: #fff;
   overflow-x: auto;         /* Enable horizontal scroll */
   white-space: nowrap;      /* Prevent wrapping */
   max-width: 100%; 
@@ -290,7 +294,11 @@ body, html {
     margin-right: 15px;
    
   }
-
+  
+  .hero-section p{
+    margin-top: 50px;
+  }
+ 
   .expanded-container {
     flex-direction: column;
     gap: 30px;
@@ -305,6 +313,7 @@ body, html {
     padding: 0 10px;
   }
   .project-card.expanded-img {
+    box-shadow: 10px 28px 40px rgba(0, 0, 0, 0.15);
     overflow-x: auto;         /* Enable horizontal scroll */
     white-space: nowrap;      /* Prevent wrapping */
     max-width: 60%;          /* Keep it within container */
@@ -417,60 +426,6 @@ html {
   font-size: 90%; /* Shrinks everything proportionally */
 }
 
-/* Center the contact form in the viewport with a small box */
-.contact-container {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 30px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 10;
-  transition: box-shadow 0.3s ease;
-}
-.contact-container:hover {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-}
-
-/* Blur the form when loading */
-.blur {
-  filter: blur(4px);
-  pointer-events: none;
-  user-select: none;
-  transition: filter 0.3s ease;
-}
-
-/* Loader overlay */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-/* Loader spinner */
-.loader {
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #007bff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-/* Spinner animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
 /* Fade in animation */
 .fade-in {
@@ -483,7 +438,11 @@ html {
 }
 
 
-
+.lead{
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: #fff;
+}
 
 .footer-address {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -518,11 +477,9 @@ html {
   .footer-connect {
     text-align: left !important;
     font-size: 1.3rem;
-    font-style: italic;
-    font-family: 'Dancing Script', cursive;
     color: #fff;
   }
-
+  
   .footer-icons {
     justify-content: flex-end !important;
   }

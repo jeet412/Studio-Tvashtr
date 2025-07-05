@@ -7,8 +7,16 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
   const [animateOut, setAnimateOut] = useState(false);
   const [expandedProjectId, setExpandedProjectId] = useState(null);
   const [isShrinking, setIsShrinking] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const projectRefs = useRef([]);
   const expandedScrollRef = useRef(null);
+
+  // Track screen width
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/projects')
@@ -98,21 +106,30 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
     }, 300);
   };
 
-  const scrollLeft = (e) => {
-    e.stopPropagation();
+  const scrollLeft = () => {
     if (expandedScrollRef.current) {
-      setTimeout(() => {
-        expandedScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-      }, 150);
+      expandedScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
     }
   };
 
-  const scrollRight = (e) => {
-    e.stopPropagation();
+  const scrollRight = () => {
     if (expandedScrollRef.current) {
-      setTimeout(() => {
-        expandedScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-      }, 150);
+      expandedScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
+  const handleEdgeClick = (e) => {
+    const el = expandedScrollRef.current;
+    if (!el || window.innerWidth > 768) return;
+
+    const bounds = el.getBoundingClientRect();
+    const x = e.clientX - bounds.left;
+    const edgeWidth = bounds.width * 0.1;
+
+    if (x < edgeWidth) {
+      scrollLeft();
+    } else if (x > bounds.width - edgeWidth) {
+      scrollRight();
     }
   };
 
@@ -148,12 +165,14 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
     el.addEventListener('mouseleave', mouseUpHandler);
     el.addEventListener('mouseup', mouseUpHandler);
     el.addEventListener('mousemove', mouseMoveHandler);
+    el.addEventListener('click', handleEdgeClick);
 
     return () => {
       el.removeEventListener('mousedown', mouseDownHandler);
       el.removeEventListener('mouseleave', mouseUpHandler);
       el.removeEventListener('mouseup', mouseUpHandler);
       el.removeEventListener('mousemove', mouseMoveHandler);
+      el.removeEventListener('click', handleEdgeClick);
     };
   }, [expandedProjectId]);
 
@@ -171,7 +190,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
           >
             <div className="project-static d-flex align-items-center mb-4" style={{ cursor: 'pointer', position: 'relative' }}>
               {isExpanded && (
-                <button className="scroll-btn left-btn" onClick={scrollLeft} aria-label="Scroll left">
+                <button className="scroll-btn left-btn" onClick={(e) => { e.stopPropagation(); scrollLeft(); }} aria-label="Scroll left">
                   ‹
                 </button>
               )}
@@ -191,7 +210,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
                     alt={project.title}
                     style={{ display: 'inline-block', pointerEvents: isExpanded ? 'none' : 'auto' }}
                   />
-                  {!isExpanded && (
+                  {!isExpanded && !isMobile && (
                     <div className="overlay d-flex align-items-center justify-content-center">
                       <h5 className="text-white text-center">{project.title}</h5>
                     </div>
@@ -200,7 +219,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
               </div>
 
               {isExpanded && (
-                <button className="scroll-btn right-btn" onClick={scrollRight} aria-label="Scroll right">
+                <button className="scroll-btn right-btn" onClick={(e) => { e.stopPropagation(); scrollRight(); }} aria-label="Scroll right">
                   ›
                 </button>
               )}
@@ -209,9 +228,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
                 {!isExpanded ? (
                   <>
                     <h5 className="mb-1">{project.title}</h5>
-                    <p className="mb-0 text-muted">
-                      {project.date} — {project.location}
-                    </p>
+                    <p className="mb-0 text-muted">{project.date} — {project.location}</p>
                   </>
                 ) : (
                   <div
@@ -236,18 +253,9 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
                       }
                     }}
                   >
-                   <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="10"
-                      height="10"
-                      fill="white"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="white" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.03 3.03 0 000-1.39l7.02-4.11a2.996 2.996 0 10-.91-1.34L8 10.91a3 3 0 100 2.18l7.02 4.11c.5-.46 1.17-.75 1.89-.75a3 3 0 100-6z" />
                     </svg>
-
-
                   </div>
                 )}
               </div>

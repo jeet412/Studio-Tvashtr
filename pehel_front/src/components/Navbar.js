@@ -19,22 +19,22 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
     {
       name: 'Architecture',
       key: 'Architecture',
-      subcategories: ['Commercial', 'Residential', 'Institutional'],
+      subcategories: ['Commercial', 'Residential', 'Institutional','Hospitality'],
     },
     {
       name: 'Urban Planning',
       key: 'Urban Planning',
-      subcategories: ['City Masterplans', 'Redevelopment', 'Transit'],
+      subcategories: ['City Masterplans', 'Redevelopment'],
     },
     {
       name: 'Interior',
       key: 'Interior',
-      subcategories: ['Office', 'Retail', 'Hospitality'],
+      subcategories: ['Commercial Office', 'Retail', 'Hospitality','Institutional'],
     },
     {
       name: 'Landscape',
       key: 'Landscape',
-      subcategories: ['Parks', 'Urban Landscape', 'Campus'],
+    subcategories: [/*'Parks', 'Urban Landscape', 'Campus'*/],
     },
   ];
 
@@ -126,7 +126,7 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
             <span className="line line3"></span>
           </button>
           <button className="logo-container btn-no-style" onClick={toggleSideMenu}>
-            <img src="/assets/samplelogo.png" alt="Logo" className="navbar-logo" />
+            <img style={{ filter: 'invert(1)' }} src="/assets/samplelogo.jpeg" alt="Logo" className="navbar-logo" />
           </button>
         </div>
 

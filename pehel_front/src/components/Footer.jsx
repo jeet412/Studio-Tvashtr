@@ -21,7 +21,7 @@ function Footer() {
         {/* Mobile layout */}
         <div className="footer-bottom-mobile d-md-none">
           <div className="footer-connect">
-            Tvashtr
+          <p className="lead">TVSASHT</p>
           </div>
           <div className="footer-icons d-flex gap-3">
             <a
@@ -54,7 +54,7 @@ function Footer() {
 
         {/* Desktop layout */}
         <div className="d-none d-md-block text-center">
-          <h5 className="mb-1 stylish-heading">Tvashstr</h5>
+          <p className="lead">TVASHT</p>
         </div>
 
         <div className="d-none d-md-flex footer-icons gap-3">

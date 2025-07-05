@@ -16,7 +16,7 @@ function Home({ selectedCategory, selectedProject }) {
       {/* Hero Section */}
       <div className="hero-section">
       {/* <h1 className="hero-title">WE CREATE ARCHITECTURE</h1> */}
-        <p className="lead">STUDIO TVSASHTR.</p>
+        <p className="lead">STUDIO TVSASHT</p>
       </div>
 
       {/* Slide-in wrapper for projects */}

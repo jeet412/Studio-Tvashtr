@@ -2,18 +2,25 @@ const Contact = require('../models/Contact');
 const nodemailer = require('nodemailer');
 
 const sendContact = async (req, res) => {
-  const { name, email, message } = req.body;
+  const { firstName, lastName, email, phone, message } = req.body;
 
-  if (!name || !email || !message) {
+  // Validate all required fields
+  if (!firstName || !lastName || !email || !phone || !message) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
   try {
-    // Save to DB
-    const newContact = new Contact({ name, email, message });
+    // Save to MongoDB
+    const newContact = new Contact({
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+    });
     await newContact.save();
 
-    // Setup Nodemailer
+    // Send Email via Nodemailer
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -24,12 +31,21 @@ const sendContact = async (req, res) => {
 
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
-      to: process.env.RECEIVER_EMAILS, // comma-separated string in .env
+      to: process.env.RECEIVER_EMAILS, // comma-separated list in .env
       subject: 'New Contact Form Submission',
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+      text: `
+New Contact Form Submission:
+
+Name: ${firstName} ${lastName}
+Email: ${email}
+Phone: +91-${phone}
+Message:
+${message}
+      `,
     };
 
     await transporter.sendMail(mailOptions);
+
     res.status(200).json({ success: true, message: 'Message sent successfully' });
   } catch (err) {
     console.error(err);
