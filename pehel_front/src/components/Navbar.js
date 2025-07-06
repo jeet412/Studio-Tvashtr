@@ -7,7 +7,7 @@ import './Navbar.css';
 function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
-  const [activeMobileCategory, setActiveMobileCategory] = useState(null); // Track active main category in mobile
+  const [activeMobileCategory, setActiveMobileCategory] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -15,11 +15,13 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const isStaticPage = ['/contact', '/about'].includes(location.pathname);
+
   const categories = [
     {
       name: 'Architecture',
       key: 'Architecture',
-      subcategories: ['Commercial', 'Residential', 'Institutional','Hospitality'],
+      subcategories: ['Commercial', 'Residential', 'Institutional', 'Hospitality'],
     },
     {
       name: 'Urban Planning',
@@ -29,19 +31,18 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
     {
       name: 'Interior',
       key: 'Interior',
-      subcategories: ['Commercial Office', 'Retail', 'Hospitality','Institutional'],
+      subcategories: ['Commercial Office', 'Retail', 'Hospitality', 'Institutional'],
     },
     {
       name: 'Landscape',
       key: 'Landscape',
-    subcategories: [/*'Parks', 'Urban Landscape', 'Campus'*/],
+      subcategories: [],
     },
   ];
 
   const handleMainCategoryClick = (e, catKey) => {
     e.preventDefault();
 
-    // In mobile, just open the subcategories dropdown
     if (window.innerWidth <= 768) {
       setActiveMobileCategory(prev => (prev === catKey ? null : catKey));
     } else {
@@ -107,8 +108,6 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const isContactPage = location.pathname === '/contact';
-
   return (
     <>
       <nav className="big-navbar">
@@ -117,7 +116,7 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
             className={`hamburger ${menuOpen ? 'open' : ''}`}
             onClick={() => {
               setMenuOpen(!menuOpen);
-              setActiveMobileCategory(null); // Reset when menu opens
+              setActiveMobileCategory(null);
             }}
             aria-label="Toggle menu"
           >
@@ -170,7 +169,7 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
         {/* MOBILE NAV LINKS */}
         <div className={`navbar-links-container ${menuOpen ? 'show' : ''}`}>
           <div className="navbar-links">
-            {!isContactPage ? (
+            {!isStaticPage ? (
               <>
                 <a
                   href="#"
@@ -187,56 +186,47 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
                 </a>
 
                 {categories.map(({ name, key, subcategories }) => (
-  <div key={key} className="mobile-category-block">
-    <a
-      href="#"
-      onClick={(e) => {
-        e.preventDefault();
-        if (window.innerWidth <= 768) {
-          // Toggle same category on mobile
-          if (selectedCategory.category === key && selectedCategory.subcategory === null) {
-            onCategorySelect({ category: 'All', subcategory: null });
-          } else {
-            onCategorySelect({ category: key, subcategory: null });
-          }
-        } else {
-          handleMainCategoryClick(e, key);
-        }
-        onProjectSelect(null);
-      }}
-      className={
-        selectedCategory.category === key && !selectedCategory.subcategory
-          ? 'active-link'
-          : ''
-      }
-    >
-      {name}
-    </a>
+                  <div key={key} className="mobile-category-block">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (window.innerWidth <= 768) {
+                          if (selectedCategory.category === key && selectedCategory.subcategory === null) {
+                            onCategorySelect({ category: 'All', subcategory: null });
+                          } else {
+                            onCategorySelect({ category: key, subcategory: null });
+                          }
+                        } else {
+                          handleMainCategoryClick(e, key);
+                        }
+                        onProjectSelect(null);
+                      }}
+                      className={
+                        selectedCategory.category === key && !selectedCategory.subcategory ? 'active-link' : ''
+                      }
+                    >
+                      {name}
+                    </a>
 
-    {/* Mobile-only subcategories shown when menuOpen and selected */}
-    {menuOpen &&
-      window.innerWidth <= 768 &&
-      selectedCategory.category === key && (
-        <div className="mobile-subcategory-dropdown">
-          {subcategories.map((subcat) => (
-            <a
-              key={subcat}
-              href="#"
-              onClick={(e) => handleSubcategoryClick(e, key, subcat)}
-              className={
-                selectedCategory.subcategory === subcat
-                  ? 'active-subcategory'
-                  : ''
-              }
-            >
-              {subcat}
-            </a>
-          ))}
-        </div>
-      )}
-  </div>
-))}
-
+                    {menuOpen &&
+                      window.innerWidth <= 768 &&
+                      selectedCategory.category === key && (
+                        <div className="mobile-subcategory-dropdown">
+                          {subcategories.map((subcat) => (
+                            <a
+                              key={subcat}
+                              href="#"
+                              onClick={(e) => handleSubcategoryClick(e, key, subcat)}
+                              className={selectedCategory.subcategory === subcat ? 'active-subcategory' : ''}
+                            >
+                              {subcat}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                ))}
               </>
             ) : (
               <Link to="/" className="contact-home-link">
@@ -248,7 +238,7 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
       </nav>
 
       {/* DESKTOP SUBCATEGORY BAR */}
-      {!isContactPage && selectedCategory.category !== 'All' && window.innerWidth > 768 && (
+      {!isStaticPage && selectedCategory.category !== 'All' && window.innerWidth > 768 && (
         <div className="subcategory-bar">
           {categories
             .find((c) => c.key === selectedCategory.category)

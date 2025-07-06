@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 
-// GET all projects
+// GET all projects (with optional category and subcategory filters)
 router.get('/', async (req, res) => {
   try {
     const { category, subcategory } = req.query;
@@ -38,6 +38,24 @@ router.get('/search', async (req, res) => {
   } catch (err) {
     console.error('Search error:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Fetch 3 projects per major category
+router.get('/category-preview', async (req, res) => {
+  try {
+    const categories = ['Architecture', 'Urban Planning', 'Interior', 'Landscape'];
+    const previews = {};
+
+    for (const category of categories) {
+      const projects = await Project.find({ category }).limit(3);
+      previews[category] = projects;
+    }
+
+    res.json(previews);
+  } catch (err) {
+    console.error('Error fetching category previews:', err);
+    res.status(500).json({ error: 'Failed to fetch category previews' });
   }
 });
 

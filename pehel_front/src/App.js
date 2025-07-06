@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Footer from './components/Footer';
 import Contact from './pages/Contact';
+import About from './pages/About'; 
 
 function App() {
   // selectedCategory is always an object: { category: string, subcategory: string|null }
@@ -40,6 +41,8 @@ function App() {
           }
         />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About onCategorySelect={handleCategorySelect}
+      onProjectSelect={handleProjectSelect}/>} />
       </Routes>
       <Footer />
     </Router>

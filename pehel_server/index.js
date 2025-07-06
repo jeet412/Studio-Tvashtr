@@ -5,12 +5,14 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const contactRoute = require('./routes/Contact');
 const projectRoutes = require('./routes/projectRoutes');
+const path = require("path");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Pehel', {
