@@ -187,8 +187,14 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
             ref={(el) => (projectRefs.current[idx] = el)}
             className={`project-wrapper ${isExpanded ? 'expanded' : ''} ${isShrinking ? 'shrink' : ''}`}
             onClick={() => toggleExpand(project._id)}
+            
           >
-            <div className="project-static d-flex align-items-center mb-4" style={{ cursor: 'pointer', position: 'relative' }}>
+            <div className="project-static d-flex align-items-center mb-4" style={{
+    cursor: 'pointer',
+    position: 'relative',
+   
+    
+  }}>
               {isExpanded && (
                 <button className="scroll-btn left-btn" onClick={(e) => { e.stopPropagation(); scrollLeft(); }} aria-label="Scroll left">
                   ‹
@@ -224,41 +230,13 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
                 </button>
               )}
 
-              <div className="project-text ms-3">
-                {!isExpanded ? (
-                  <>
-                    <h5 className="mb-1">{project.title}</h5>
-                    <p className="mb-0 text-muted">{project.date} — {project.location}</p>
-                  </>
-                ) : (
-                  <div
-                    className="share-icon d-flex align-items-center justify-content-center"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      backgroundColor: '#000',
-                      color: '#fff',
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (navigator.share) {
-                        navigator.share({
-                          title: project.title,
-                          url: window.location.href,
-                        });
-                      } else {
-                        alert('Share not supported');
-                      }
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="white" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.03 3.03 0 000-1.39l7.02-4.11a2.996 2.996 0 10-.91-1.34L8 10.91a3 3 0 100 2.18l7.02 4.11c.5-.46 1.17-.75 1.89-.75a3 3 0 100-6z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
+{!isExpanded && (
+  <div className="project-text ms-3">
+    <h5 className="mb-1">{project.title}</h5>
+    <p className="mb-0 text-muted">{project.date} — {project.location}</p>
+  </div>
+)}
+
             </div>
           </div>
         );

@@ -83,7 +83,7 @@ body, html {
   transform: scale(2);
   transition: transform 2s ease;
   z-index: 10;
-  margin: 100px 0px;
+  margin: 160px 0px 160px 0px;
   position: relative;
   height: auto;
 }

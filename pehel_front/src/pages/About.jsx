@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./About.css";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+
 const About = ({ onCategorySelect, onProjectSelect }) => {
   const [projectImages, setProjectImages] = useState({});
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/projects/category-preview")
+    fetch(`${BACKEND_URL}/api/projects/category-preview`)
       .then((res) => res.json())
       .then((data) => setProjectImages(data))
       .catch(console.error);
@@ -19,7 +21,6 @@ const About = ({ onCategorySelect, onProjectSelect }) => {
   };
 
   const handleProjectClick = (project) => {
-    // ✅ Only main category selected
     onCategorySelect({ category: project.category, subcategory: null });
     onProjectSelect(null);
     navigate("/");
@@ -81,7 +82,7 @@ const About = ({ onCategorySelect, onProjectSelect }) => {
 
       <section className="about-image">
         <img
-          src="http://localhost:5000/assets/about.webp"
+          src={`${BACKEND_URL}/assets/about.webp`}
           alt="About"
         />
       </section>
@@ -121,7 +122,7 @@ const SectionBlock = ({ title, description1, description2, projects, onProjectCl
           onClick={() => onProjectClick(project)}
         >
           <img
-            src={`http://localhost:5000${project.img}`}
+            src={`${BACKEND_URL}${project.img}`}
             alt={project.title}
             className="project-img"
             style={{ borderRadius: 0 }}
