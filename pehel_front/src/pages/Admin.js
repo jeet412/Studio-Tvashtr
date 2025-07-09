@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Admin() {
   const [contacts, setContacts] = useState([]);
@@ -12,7 +13,7 @@ function Admin() {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get('http://localhost:5000/api/contact/all');
+        const res = await axios.get(`${BACKEND_URL}/api/contact/all`);
         setContacts(res.data);
       } catch (err) {
         setError('Failed to load contacts.');

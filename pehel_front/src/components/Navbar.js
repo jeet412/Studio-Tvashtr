@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi';
 import axios from 'axios';
 import './Navbar.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,7 +78,7 @@ function Navbar({ selectedCategory, onCategorySelect, onProjectSelect }) {
     if (value.trim().length >= 3) {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/projects/search?q=${encodeURIComponent(value)}`
+          `${BACKEND_URL}/api/projects/search?q=${encodeURIComponent(value)}`
         );
         setSuggestions(res.status === 200 ? res.data : []);
       } catch {

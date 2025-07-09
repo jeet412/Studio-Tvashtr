@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../App.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function ProjectGrid({ selectedCategory, selectedProject }) {
   const [allProjects, setAllProjects] = useState([]);
@@ -19,8 +20,8 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/projects')
-      .then((res) => res.json())
+    fetch(`${BACKEND_URL}/api/projects`)
+    .then((res) => res.json())
       .then((data) => {
         setAllProjects(data);
         setCurrentProjects(data);
