@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../App.css';
+import { FaEnvelope, FaFacebookF, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function ProjectGrid({ selectedCategory, selectedProject }) {
@@ -10,9 +13,11 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
   const [isShrinking, setIsShrinking] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const projectRefs = useRef([]);
-  const expandedScrollRef = useRef(null);
+  const scrollWrapperRef = useRef(null);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const scrollLeftStart = useRef(0);
 
-  // Track screen width
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
@@ -21,7 +26,7 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/projects`)
-    .then((res) => res.json())
+      .then((res) => res.json())
       .then((data) => {
         setAllProjects(data);
         setCurrentProjects(data);
@@ -83,19 +88,6 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
     };
   }, [currentProjects]);
 
-  useEffect(() => {
-    if (selectedProject && currentProjects.length > 0) {
-      const index = currentProjects.findIndex((p) => p._id === selectedProject._id);
-      if (index !== -1 && projectRefs.current[index]) {
-        setTimeout(() => {
-          const el = projectRefs.current[index];
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setExpandedProjectId(selectedProject._id);
-        }, 500);
-      }
-    }
-  }, [selectedProject, currentProjects]);
-
   const toggleExpand = (id) => {
     if (expandedProjectId === id) return;
     setExpandedProjectId(id);
@@ -107,73 +99,42 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
     }, 300);
   };
 
-  const scrollLeft = () => {
-    if (expandedScrollRef.current) {
-      expandedScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    if (expandedScrollRef.current) {
-      expandedScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-    }
-  };
-
-  const handleEdgeClick = (e) => {
-    const el = expandedScrollRef.current;
-    if (!el || window.innerWidth > 768) return;
-
-    const bounds = el.getBoundingClientRect();
-    const x = e.clientX - bounds.left;
-    const edgeWidth = bounds.width * 0.1;
-
-    if (x < edgeWidth) {
-      scrollLeft();
-    } else if (x > bounds.width - edgeWidth) {
-      scrollRight();
-    }
-  };
-
+  // Mouse dragging scroll for expanded content
   useEffect(() => {
-    const el = expandedScrollRef.current;
+    const el = scrollWrapperRef.current;
     if (!el) return;
 
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    const mouseDownHandler = (e) => {
-      isDown = true;
-      el.classList.add('dragging');
-      startX = e.pageX - el.offsetLeft;
-      scrollLeft = el.scrollLeft;
+    const handleMouseDown = (e) => {
+      isDragging.current = true;
+      dragStartX.current = e.pageX - el.offsetLeft;
+      scrollLeftStart.current = el.scrollLeft;
+      el.style.cursor = 'grabbing';
+      el.style.userSelect = 'none';
     };
 
-    const mouseUpHandler = () => {
-      isDown = false;
-      el.classList.remove('dragging');
-    };
-
-    const mouseMoveHandler = (e) => {
-      if (!isDown) return;
-      e.preventDefault();
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
       const x = e.pageX - el.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      el.scrollLeft = scrollLeft - walk;
+      const walk = (x - dragStartX.current) * 1.2;
+      el.scrollLeft = scrollLeftStart.current - walk;
     };
 
-    el.addEventListener('mousedown', mouseDownHandler);
-    el.addEventListener('mouseleave', mouseUpHandler);
-    el.addEventListener('mouseup', mouseUpHandler);
-    el.addEventListener('mousemove', mouseMoveHandler);
-    el.addEventListener('click', handleEdgeClick);
+    const handleMouseUpOrLeave = () => {
+      isDragging.current = false;
+      el.style.cursor = 'grab';
+      el.style.removeProperty('user-select');
+    };
+
+    el.addEventListener('mousedown', handleMouseDown);
+    el.addEventListener('mousemove', handleMouseMove);
+    el.addEventListener('mouseup', handleMouseUpOrLeave);
+    el.addEventListener('mouseleave', handleMouseUpOrLeave);
 
     return () => {
-      el.removeEventListener('mousedown', mouseDownHandler);
-      el.removeEventListener('mouseleave', mouseUpHandler);
-      el.removeEventListener('mouseup', mouseUpHandler);
-      el.removeEventListener('mousemove', mouseMoveHandler);
-      el.removeEventListener('click', handleEdgeClick);
+      el.removeEventListener('mousedown', handleMouseDown);
+      el.removeEventListener('mousemove', handleMouseMove);
+      el.removeEventListener('mouseup', handleMouseUpOrLeave);
+      el.removeEventListener('mouseleave', handleMouseUpOrLeave);
     };
   }, [expandedProjectId]);
 
@@ -188,55 +149,133 @@ function ProjectGrid({ selectedCategory, selectedProject }) {
             ref={(el) => (projectRefs.current[idx] = el)}
             className={`project-wrapper ${isExpanded ? 'expanded' : ''} ${isShrinking ? 'shrink' : ''}`}
             onClick={() => toggleExpand(project._id)}
-            
           >
-            <div className="project-static d-flex align-items-center mb-4" style={{
-    cursor: 'pointer',
-    position: 'relative',
-   
-    
-  }}>
-              {isExpanded && (
-                <button className="scroll-btn left-btn" onClick={(e) => { e.stopPropagation(); scrollLeft(); }} aria-label="Scroll left">
-                  ‹
-                </button>
-              )}
+            <div className="project-static d-flex align-items-center mb-4" style={{ cursor: 'pointer' }}>
+            {isExpanded ? (
+  <div className="expanded-wrapper w-100 position-relative">
+    <button
+      className="scroll-button left"
+      onClick={(e) => {
+        e.stopPropagation();
+        scrollWrapperRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+      }}
+    >
+      <i className="fas fa-chevron-left"></i>
+    </button>
+    <button
+      className="scroll-button right"
+      onClick={(e) => {
+        e.stopPropagation();
+        scrollWrapperRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+      }}
+    >
+      <i className="fas fa-chevron-right"></i>
+    </button>
 
-              <div className="image-scroll-wrapper d-flex align-items-center mx-3">
-                <div
-                  className={`project-card uniform position-relative ${isExpanded ? 'expanded-img' : 'overflow-hidden'}`}
-                  ref={isExpanded ? expandedScrollRef : null}
-                  style={{
-                    overflowX: isExpanded ? 'auto' : 'hidden',
-                    whiteSpace: isExpanded ? 'nowrap' : 'normal',
-                  }}
-                >
-                  <img
-                    src={isExpanded ? project.fullImg || project.img : project.img}
-                    className="uniform-size"
-                    alt={project.title}
-                    style={{ display: 'inline-block', pointerEvents: isExpanded ? 'none' : 'auto' }}
-                  />
-                  {!isExpanded && !isMobile && (
-                    <div className="overlay d-flex align-items-center justify-content-center">
-                      <h5 className="text-white text-center">{project.title}</h5>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {isExpanded && (
-                <button className="scroll-btn right-btn" onClick={(e) => { e.stopPropagation(); scrollRight(); }} aria-label="Scroll right">
-                  ›
-                </button>
-              )}
-
-{!isExpanded && (
-  <div className="project-text ms-3">
-    <h5 className="mb-1">{project.title}</h5>
-    <p className="mb-0 text-muted">{project.date} — {project.location}</p>
+    <div className="expanded-scroll-container" ref={scrollWrapperRef}>
+  {/* Slide 1 - Meta Info */}
+  <div className="project-meta-column">
+    <div>
+      <h4>{project.title}</h4>
+      <p>{project.location}</p>
+      <p>{project.date}</p>
+      <div className="info-group">
+        <p>CLIENT<br />{project.client }</p>
+        <p>TYPOLOGY<br />{project.typology }</p>
+        <p>SIZE<br />{project.size }</p>
+        <p>STATUS<br />{project.status }</p>
+      </div>
+    </div>
+    <div className="share-buttons">
+      <a href="#"><FaEnvelope size={18} /></a>
+      <a href="#"><FaFacebookF size={18} /></a>
+      <a href="#"><FaLinkedinIn size={18} /></a>
+      <a href="#"><FaXTwitter size={18} /></a>
+    </div>
   </div>
+
+  {/* Slide 2 - Main Project Image */}
+  <img className="project-image-slide" src={project.img} alt={project.title} />
+
+  {/* Slide 3+ - Dynamic Content */}
+  {(() => {
+    let slides = [];
+
+    try {
+      if (Array.isArray(project.slides)) {
+        slides = project.slides;
+      } else if (typeof project.slides === 'string') {
+        slides = JSON.parse(project.slides);
+      }
+    } catch (err) {
+      console.error('Error parsing slides:', err);
+    }
+
+    return (
+      <>
+        {slides.map((slide, index) => {
+          if (slide.type === 'text') {
+            return (
+              <div key={index} className="project-text-slide">
+                <p>{slide.text}</p>
+              </div>
+            );
+          } else if (slide.type === 'image') {
+            return (
+              <img
+                key={index}
+                className="project-image-slide"
+                src={slide.image}
+                alt={`Slide ${index}`}
+              />
+            );
+          } else if (slide.type === 'mixed') {
+            return (
+              <div key={index} className="project-slide-combined">
+                {slide.image && <img src={slide.image} alt={`Slide ${index}`} />}
+                {slide.text && <p>{slide.text}</p>}
+              </div>
+            );
+          }
+          return null;
+        })}
+      </>
+    );
+  })()}
+</div>
+
+
+
+  </div>
+) : (
+  <>
+    <div className="image-scroll-wrapper d-flex align-items-center mx-3">
+      <div className="project-card uniform position-relative overflow-hidden" style={{
+        overflowX: 'hidden',
+        whiteSpace: 'normal',
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+        <img
+          src={project.img}
+          className="uniform-size"
+          alt={project.title}
+          style={{ display: 'inline-block' }}
+        />
+        {!isMobile && (
+          <div className="overlay d-flex align-items-center justify-content-center">
+            <h5 className="text-white text-center">{project.title}</h5>
+          </div>
+        )}
+      </div>
+    </div>
+    <div className="project-text ms-3">
+      <h5 className="mb-1">{project.title}</h5>
+      <p className="mb-0 text-muted">{project.date} — {project.location}</p>
+    </div>
+  </>
 )}
+
 
             </div>
           </div>
